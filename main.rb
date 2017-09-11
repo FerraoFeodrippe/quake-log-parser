@@ -5,7 +5,6 @@ def start
   f = File.open("games.txt", "r")
   f.each_line{ |line|
     LogParser.parse(line).action
-  
   }
   f.close  
 end

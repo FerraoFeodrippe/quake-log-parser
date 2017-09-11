@@ -2,9 +2,9 @@ require './core.rb'
 
 module TopNode
   def action
-    if elements[1].respond_to? :identifier
-        elements[1].identifier.action(elements[1])
-    end
+      if definition.elements[0].identifier.respond_to? :action
+        definition.elements[0].identifier.action(definition.elements[0])
+      end
   end
 end
 
@@ -22,7 +22,7 @@ end
 
 module ClientConnect
   def action(parent)
-    id = parent.params.text_value.to_i
+    id = parent.suffix.elements[0].text_value.to_i
     Core.add_player(id)
   end    
 end
@@ -35,24 +35,24 @@ end
 
 module ClientDisconnect
   def action(parent)
-    id = parent.params.text_value.to_i
+    id = parent.suffix.elements[0].text_value.to_i
     Core.remove_player(id)
   end 
 end
 
 module ClientUserinfoChanged
   def action(parent)
-    id = parent.params.number.text_value.to_i
-    name = parent.params.name.text_value
+    id = parent.suffix.elements[0].text_value.to_i
+    name = parent.suffix.name.text_value
     Core.change_user(id, name)
   end 
 end
 
 module ActionKill
   def action(parent)
-    w_kill = parent.params.n1.text_value.to_i
-    w_killed = parent.params.n2.text_value.to_i
-    mod_death = parent.params.n3.text_value.to_i
+    w_kill = parent.suffix.n1.text_value.to_i
+    w_killed = parent.suffix.n2.text_value.to_i
+    mod_death = parent.suffix.n3.text_value.to_i
     Core.add_kill(w_kill, w_killed, mod_death)
   end 
 end

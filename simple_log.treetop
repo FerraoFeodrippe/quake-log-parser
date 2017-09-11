@@ -1,36 +1,39 @@
 grammar SimpleLog
-  rule root
-    ( space time space )
-    ( 
-      ( ignore space ) / 
-      ( identifier symbol space params space) 
-    ) <TopNode>
+
+  rule top
+    spacing definition:definition+ end_of_file <TopNode>
   end
 
-  rule params
-    init_game_params / 
-    client_params /
-    item_params /
-    kill_params /
+  rule definition
+    time spacing identifier SYMBOL? suffix:suffix?
+  end
+
+  rule suffix
+    s_init_game /
+    s_kill /
+    s_client_user_info_changed /
+    s_client /
     number /
-    space
+    spacing
   end
 
-  rule init_game_params
-    '\\' ignore_remain
+  rule s_init_game
+    "\\" .*
   end
 
-  rule client_params
-    number space 'n\\' name:client_name '\\' ignore_remain
+  # " 21:07 Kill: 1022 2 22: <world> killed Isgalamido by MOD_TRIGGER_HURT"
+
+  rule s_kill
+    n1:number n2:number n3:number SYMBOL
+    .* #name 'killed' spacing name 'by' spacing name
   end
 
-  rule item_params
-    number space name
+  rule s_client_user_info_changed
+    number 'n\\' name:[^\\]* '\\' .*
   end
 
-  rule kill_params
-    n1:number space n2:number space n3:number symbol space
-    ignore_remain
+  rule s_client 
+    number name
   end
 
   rule identifier
@@ -41,7 +44,9 @@ grammar SimpleLog
     client_user_info_changed /
     client_begin /
     kill /
-    item
+    item /
+    ignore /
+    spacing
   end
 
   rule init_game
@@ -76,6 +81,14 @@ grammar SimpleLog
     'Item' <ActionItem>
   end
 
+  rule name 
+    letter+ spacing
+  end
+
+  rule letter
+    [a-zA-Z_<>]
+  end
+
   rule time
     hour ':' minute
   end
@@ -88,31 +101,39 @@ grammar SimpleLog
     [0-5] [0-9]  
   end
 
-  rule symbol
-    ':'
+  rule number
+    digit+ spacing
+  end
+
+  rule digit
+    [0-9]
+  end
+
+  rule spacing
+    (space / ignore_line)*
+  end
+
+  rule ignore_line
+    '-' (!end_of_line .)* end_of_line?
   end
 
   rule ignore
-   ('Exit:' / 'score:' / '-' / 'red:' / 'say:' ) ignore_remain
+   ('Exit:' / 'score:' / '-' / 'red:' / 'say:' ) (!end_of_line .)* end_of_line
   end
 
-  rule ignore_remain
-    .*
-  end
-
-  rule number
-    [0-9]+
-  end
-
-  rule name
-    [a-zA-Z_<>]+
-  end
-
-  rule client_name
-    [^\\]*
-  end
-  
   rule space
-    [\s\n\t\r]*
+    [ ] / [\t] / end_of_line
+  end
+
+  rule end_of_line
+    [\r\n] / [\n] / [\r]
+  end
+
+  rule end_of_file
+    !.
+  end
+
+  rule SYMBOL
+    ':' spacing
   end
 end
