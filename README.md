@@ -1,3 +1,3 @@
 # quake-log-parser
 
-Um parser para os logs de Quake, ainda em desenvolvimento e testes.
+A ideia deste projeto é desenvolver um parser para leitura logs de Quake, e mostrar determinados resultados. Ainda em inicio de projeto e puramente feito para estudos.
