@@ -1,0 +1,118 @@
+grammar SimpleLog
+  rule root
+    ( space time space )
+    ( 
+      ( ignore space ) / 
+      ( identifier symbol space params space) 
+    ) <TopNode>
+  end
+
+  rule params
+    init_game_params / 
+    client_params /
+    item_params /
+    kill_params /
+    number /
+    space
+  end
+
+  rule init_game_params
+    '\\' ignore_remain
+  end
+
+  rule client_params
+    number space 'n\\' name:client_name '\\' ignore_remain
+  end
+
+  rule item_params
+    number space name
+  end
+
+  rule kill_params
+    n1:number space n2:number space n3:number symbol space
+    ignore_remain
+  end
+
+  rule identifier
+    init_game /
+    shutdown_game /
+    client_connect / 
+    client_disconnect /
+    client_user_info_changed /
+    client_begin /
+    kill /
+    item
+  end
+
+  rule init_game
+    'InitGame' <NewGame>
+  end
+
+  rule shutdown_game
+    'ShutdownGame' <FinishGame>
+  end
+
+  rule client_connect
+    'ClientConnect' <ClientConnect>
+  end
+
+  rule client_disconnect
+    'ClientDisconnect' <ClientDisconnect>
+  end
+
+  rule client_user_info_changed
+    'ClientUserinfoChanged' <ClientUserinfoChanged>
+  end
+
+  rule client_begin
+    'ClientBegin' <ClientBegin>
+  end
+
+  rule kill
+    'Kill' <ActionKill>
+  end
+
+  rule item
+    'Item' <ActionItem>
+  end
+
+  rule time
+    hour ':' minute
+  end
+
+  rule hour
+   number
+  end
+
+  rule minute
+    [0-5] [0-9]  
+  end
+
+  rule symbol
+    ':'
+  end
+
+  rule ignore
+   ('Exit:' / 'score:' / '-' / 'red:' / 'say:' ) ignore_remain
+  end
+
+  rule ignore_remain
+    .*
+  end
+
+  rule number
+    [0-9]+
+  end
+
+  rule name
+    [a-zA-Z_<>]+
+  end
+
+  rule client_name
+    [^\\]*
+  end
+  
+  rule space
+    [\s\n\t\r]*
+  end
+end
