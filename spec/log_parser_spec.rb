@@ -1,4 +1,4 @@
-require_relative '../log_parser'
+require_relative '../lib/processes/log_parser'
 
 describe LogParser do
   context  'match with time at start' do

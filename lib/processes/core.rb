@@ -1,4 +1,4 @@
-require './game.rb'
+require_relative '../entities/game'
 
 module Core
   @@games = []
@@ -40,9 +40,9 @@ module Core
       g_players = game.players
       g_players.each{ |pl| 
         if index = players.index{|x| x.name == pl.name} 
-          players.at(index).add_kill
+          players.at(index).add_kill(pl.kills)
         else
-          players << Player.new(pl.id, pl.name)
+          players << Player.new(pl.id, pl.name, pl.kills)
         end
     }
     end

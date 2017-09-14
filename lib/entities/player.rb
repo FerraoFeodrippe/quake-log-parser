@@ -1,18 +1,18 @@
 class Player
   attr_reader :id, :kills, :name
 
-  def initialize (id, name='')
+  def initialize (id, name='', kills = 0)
     @id = id
     @name = name
-    @kills = 0
+    @kills = kills
   end
 
   def ==(player)
     @name == player.name 
   end
 
-  def add_kill
-    @kills+=1
+  def add_kill (factor = 1)
+    @kills+=factor
   end
 
   def remove_kill

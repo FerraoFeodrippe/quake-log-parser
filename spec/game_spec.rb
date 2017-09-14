@@ -1,5 +1,5 @@
-require_relative '../game'
-require_relative '../player'
+require_relative '../lib/entities/game'
+require_relative '../lib/entities/player'
 
 describe Game do
   before :each do

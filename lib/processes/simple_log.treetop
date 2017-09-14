@@ -1,7 +1,7 @@
 grammar SimpleLog
 
   rule top
-    spacing definition:definition+ end_of_file <TopNode>
+    spacing definition:definition+ end_of_file <ParserExtensions::TopNode>
   end
 
   rule definition
@@ -50,39 +50,39 @@ grammar SimpleLog
   end
 
   rule init_game
-    'InitGame' <NewGame>
+    'InitGame' <ParserExtensions::NewGame>
   end
 
   rule shutdown_game
-    'ShutdownGame' <FinishGame>
+    'ShutdownGame' <ParserExtensions::FinishGame>
   end
 
   rule client_connect
-    'ClientConnect' <ClientConnect>
+    'ClientConnect' <ParserExtensions::ClientConnect>
   end
 
   rule client_disconnect
-    'ClientDisconnect' <ClientDisconnect>
+    'ClientDisconnect' <ParserExtensions::ClientDisconnect>
   end
 
   rule client_user_info_changed
-    'ClientUserinfoChanged' <ClientUserinfoChanged>
+    'ClientUserinfoChanged' <ParserExtensions::ClientUserinfoChanged>
   end
 
   rule client_begin
-    'ClientBegin' <ClientBegin>
+    'ClientBegin' <ParserExtensions::ClientBegin>
   end
 
   rule kill
-    'Kill' <ActionKill>
+    'Kill' <ParserExtensions::ActionKill>
   end
 
   rule item
-    'Item' <ActionItem>
+    'Item' <ParserExtensions::ActionItem>
   end
 
   rule name 
-    letter+ spacing
+    letter* spacing
   end
 
   rule letter
@@ -102,7 +102,7 @@ grammar SimpleLog
   end
 
   rule number
-    digit+ spacing
+    digit* spacing
   end
 
   rule digit
