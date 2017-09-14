@@ -1,0 +1,8 @@
+cd `dirname $0`/lib
+echo
+echo '------------------------'
+echo
+ruby main.rb show_games -read
+echo
+echo '------------------------'
+echo

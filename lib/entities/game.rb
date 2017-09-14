@@ -23,6 +23,7 @@ class Game
     if (w_kill == 1022) || (w_kill == w_killed)
       player2.remove_kill
     elsif
+      w_kill
       player1 = players[player_index(w_kill)]
       player1.add_kill
     end
