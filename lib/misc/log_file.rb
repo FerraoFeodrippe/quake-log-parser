@@ -15,12 +15,9 @@ module LogFile
 
   def start
     log_lines = IO.readlines(@file_name)
+    log_method = @check_parse == true ? LogParser.method(:parse) : LogReader.method(:read)
     log_lines.each_with_index do |line, n|
-      if @check_parse
-        LogParser.parse(line).action
-      else
-        LogReader.read(line)
-      end
+      log_method.call(line)
     end
   end
 end
