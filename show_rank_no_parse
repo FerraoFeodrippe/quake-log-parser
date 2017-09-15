@@ -1,8 +1,0 @@
-cd `dirname $0`/lib
-echo
-echo '------------------------'
-echo
-ruby main.rb show_rank -read
-echo
-echo '------------------------'
-echo

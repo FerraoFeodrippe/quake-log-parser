@@ -1,8 +1,9 @@
-cd `dirname $0`/lib
+cd `dirname $0`
+cd ../lib
 echo
 echo '------------------------'
 echo
-ruby main.rb show_games
+ruby main.rb
 echo
 echo '------------------------'
 echo
