@@ -2,7 +2,7 @@ require_relative "../processes/log_parser"
 require_relative "../processes/log_reader"
 
 module LogFile
-    @check_parse = false
+    @check_parse = true
   extend self
 
   def file(name)
