@@ -34,6 +34,10 @@ module Core
     @@games
   end
 
+  def clear
+    @@games = []
+  end
+
   def get_rank
     players = []
     @@games.each do |game|

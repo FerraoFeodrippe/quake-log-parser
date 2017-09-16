@@ -17,7 +17,7 @@ module LogFile
     log_lines = IO.readlines(@file_name)
     log_method = @check_parse == true ? LogParser.method(:parse) : LogReader.method(:read)
     log_lines.each_with_index do |line, n|
-      log_method.call(line)
+      log_method.call(line,:n => n)
     end
   end
 end

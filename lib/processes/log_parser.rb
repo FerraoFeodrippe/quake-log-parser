@@ -8,7 +8,7 @@ module LogParser
     if(tree.nil?)
       raise Exception, "Parse error at offset: #{@@parser.index}; At line #{env[:n]}:#{data}"
     end
-    tree
+    tree.action
   end
 end
 
