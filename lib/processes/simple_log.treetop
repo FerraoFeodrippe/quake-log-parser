@@ -11,15 +11,15 @@ grammar SimpleLog
   end
 
   rule separetor_line
-    spacing time ('-'*) spacing
+    spacing time '-'*
   end
 
   rule init_game
-    time "InitGame" SYMBOL params <NewGameNode>
+    spacing time "InitGame" SYMBOL params <NewGameNode>
   end
 
   rule shutdown_game
-    time "ShutdownGame" SYMBOL <FinishGameNode>
+    spacing time "ShutdownGame" SYMBOL <FinishGameNode>
   end
 
   rule action
