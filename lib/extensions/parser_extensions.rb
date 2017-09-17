@@ -1,67 +1,86 @@
 require_relative '../processes/core'
 require 'treetop'
 
-module ParserExtensions
-  class TopNode < Treetop::Runtime::SyntaxNode
+  module LogNode
     def action
-        if definition.elements[0].identifier.respond_to? :action
-          definition.elements[0].identifier.action(definition.elements[0])
-        end
+      games = elements[0].elements
+      games.each{|game| game.action}
+    end
+  end
+
+  module GameNode
+    def action
+      init_game, actions, shutdown_game = elements[1..3]
+      init_game.action
+      actions.elements.each{|action| action.action}
+      shutdown_game.action
     end
   end
   
-  class NewGame < Treetop::Runtime::SyntaxNode
-    def action(parent)
+  module NewGameNode
+    def action
       Core.new_game
     end
   end
   
-  class FinishGame < Treetop::Runtime::SyntaxNode
-    def action(parent)
+  module FinishGameNode
+    def action
       Core.finish_game
     end
   end
+
+  module ActionNode
+    def action
+      command = elements[1]
+      command.action
+    end
+  end
   
-  class ClientConnect < Treetop::Runtime::SyntaxNode
-    def action(parent)
-      id = parent.suffix.elements[0].text_value.to_i
-      Core.add_player(id)
+  module ClientConnectNode
+    def action
+      id = elements[2].elements[0].text_value.to_i
+      Core.add_player(id.to_i)
     end    
   end
   
-  class ClientBegin < Treetop::Runtime::SyntaxNode
-    def action(parent)
+  module ClientBeginNode
+    def action
       #not implemented
     end     
   end
   
-  class ClientDisconnect < Treetop::Runtime::SyntaxNode
-    def action(parent)
-      id = parent.suffix.elements[0].text_value.to_i
+  module ClientDisconnectNode
+    def action
+      id = elements[2].elements[0].text_value.to_i
       Core.remove_player(id)
     end 
   end
   
-  class ClientUserinfoChanged < Treetop::Runtime::SyntaxNode
-    def action(parent)
-      id = parent.suffix.elements[0].text_value.to_i
-      name = parent.suffix.name.text_value
+  module ClientUserinfoChangedNode
+    def action
+      id = elements[2].elements[0].text_value.to_i
+      params = elements[4]
+      param = params.elements[1]
+      name = param.elements[0].elements[0].text_value
       Core.change_user(id, name)
     end 
   end
   
-  class ActionKill < Treetop::Runtime::SyntaxNode
-    def action(parent)
-      w_kill = parent.suffix.n1.text_value.to_i
-      w_killed = parent.suffix.n2.text_value.to_i
-      mod_death = parent.suffix.n3.text_value.to_i
+  module KillNode
+    def action
+      w_kill, w_killed, mod_death = elements[2..4].map{|e| e.text_value.to_i}
       Core.add_kill(w_kill, w_killed, mod_death)
     end 
   end
   
-  class ActionItem < Treetop::Runtime::SyntaxNode
-    def action(parent)
+  module ItemNode
+    def action
       #not implemented
     end 
   end
-end
+
+  module IgnoreNode
+    def action
+      #not implemented
+    end
+  end

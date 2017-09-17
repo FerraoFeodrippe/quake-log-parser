@@ -6,7 +6,7 @@ module LogParser
   def self.parse(data, env = {})
     tree = @@parser.parse(data)
     if(tree.nil?)
-      raise Exception, "Parse error at offset: #{@@parser.index}; At line #{env[:n]}:#{data}"
+      raise Exception, "Parse error at offset: #{@@parser.failure_index} at line: #{@@parser.failure_line}"
     end
     tree.action
   end

@@ -1,124 +1,103 @@
 grammar SimpleLog
-
-  rule top
-    spacing definition:definition+ end_of_file <ParserExtensions::TopNode>
+  
+  rule log
+    game+ end_of_file <LogNode>
   end
 
-  rule definition
-    time spacing identifier SYMBOL? suffix:suffix?
+  rule game
+    separetor_line 
+    init_game action+ shutdown_game
+    separetor_line <GameNode>
   end
 
-  rule suffix
-    s_init_game /
-    s_kill /
-    s_client_user_info_changed /
-    s_client /
-    number /
-    spacing
-  end
-
-  rule s_init_game
-    "\\" .*
-  end
-
-  # " 21:07 Kill: 1022 2 22: <world> killed Isgalamido by MOD_TRIGGER_HURT"
-
-  rule s_kill
-    n1:number n2:number n3:number SYMBOL
-    .* #name 'killed' spacing name 'by' spacing name
-  end
-
-  rule s_client_user_info_changed
-    number 'n\\' name:[^\\]* '\\' .*
-  end
-
-  rule s_client 
-    number name
-  end
-
-  rule identifier
-    init_game /
-    shutdown_game /
-    client_connect / 
-    client_disconnect /
-    client_user_info_changed /
-    client_begin /
-    kill /
-    item /
-    ignore /
-    spacing
+  rule separetor_line
+    spacing time ('-'*) spacing
   end
 
   rule init_game
-    'InitGame' <ParserExtensions::NewGame>
+    time "InitGame" SYMBOL params <NewGameNode>
   end
 
   rule shutdown_game
-    'ShutdownGame' <ParserExtensions::FinishGame>
+    time "ShutdownGame" SYMBOL <FinishGameNode>
+  end
+
+  rule action
+    time command spacing <ActionNode>
+  end
+
+  rule command
+    client_connect /
+    client_disconnect /
+    client_begin /
+    client_userinfo_changed /
+    kill /
+    item /
+    ignore
   end
 
   rule client_connect
-    'ClientConnect' <ParserExtensions::ClientConnect>
+    "ClientConnect" SYMBOL id:number <ClientConnectNode>
   end
-
+  
   rule client_disconnect
-    'ClientDisconnect' <ParserExtensions::ClientDisconnect>
-  end
-
-  rule client_user_info_changed
-    'ClientUserinfoChanged' <ParserExtensions::ClientUserinfoChanged>
+    "ClientDisconnect" SYMBOL id:number <ClientDisconnectNode>
   end
 
   rule client_begin
-    'ClientBegin' <ParserExtensions::ClientBegin>
+    "ClientBegin" SYMBOL id:number <ClientBeginNode>
+  end
+
+  rule client_userinfo_changed
+    "ClientUserinfoChanged" SYMBOL id:number "n" params <ClientUserinfoChangedNode>
   end
 
   rule kill
-    'Kill' <ParserExtensions::ActionKill>
+    "Kill" SYMBOL number number number (!end_of_line .)* <KillNode>
   end
 
   rule item
-    'Item' <ParserExtensions::ActionItem>
-  end
-
-  rule name 
-    letter* spacing
-  end
-
-  rule letter
-    [a-zA-Z_<>]
-  end
-
-  rule time
-    hour ':' minute
-  end
-
-  rule hour
-   number
-  end
-
-  rule minute
-    [0-5] [0-9]  
-  end
-
-  rule number
-    digit* spacing
-  end
-
-  rule digit
-    [0-9]
-  end
-
-  rule spacing
-    (space / ignore_line)*
-  end
-
-  rule ignore_line
-    '-' (!end_of_line .)* end_of_line?
+    "Item" SYMBOL number mod_item <ItemNode>
   end
 
   rule ignore
-   ('Exit:' / 'score:' / '-' / 'red:' / 'say:' ) (!end_of_line .)* end_of_line
+    ('Exit:' / 'score:' / 'red:' / 'say:' ) (!end_of_line .)* <IgnoreNode>
+  end
+
+  rule mod_item
+    [a-zA-Z_]+
+  end
+
+  rule time
+    hour:number ":" minute spacing
+  end
+
+  rule minute
+    [0-5] [0-9]
+  end
+
+  rule params 
+    bars param+ number
+  end
+
+  rule param
+    (!(bars/end_of_line) .)+ bars
+  end
+
+  rule bars
+    "\\\\" / "\\"  / "/"
+  end
+
+  rule number
+    [0-9]+ spacing
+  end
+
+  rule SYMBOL
+    ":" spacing
+  end
+
+  rule spacing
+    space*
   end
 
   rule space
@@ -131,9 +110,5 @@ grammar SimpleLog
 
   rule end_of_file
     !.
-  end
-
-  rule SYMBOL
-    ':' spacing
   end
 end
