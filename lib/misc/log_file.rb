@@ -19,13 +19,13 @@ module LogFile
       tree = LogParser.parse(log.read)
       tree.action   
       #if need to use for test, split the large by games
-      #save_games_log(tree)
+      save_games_log(tree)
     else
       log.readlines.each{|line| LogReader.read(line) }
     end
     log.close
   end
-
+  private 
   def get_games(tree)
     tree.elements[0].elements
   end
@@ -40,9 +40,10 @@ module LogFile
 
   def save_games_log(tree)
     games = get_games(tree)
-    dir= File.join(__dir__, "../../data/")
+    dir= File.join(__dir__, "../../data/from |#{File.basename @file_name}|/")
+    FileUtils.mkdir_p(dir)
     games.each_index do |i| 
-      File.open(dir + "game_#{i} from |#{File.basename(@file_name)}|.txt", "w") do |file|
+      File.open(dir + "game_#{i}.txt", "w") do |file|
         file.write(get_game_log(games,i))
       end
     end

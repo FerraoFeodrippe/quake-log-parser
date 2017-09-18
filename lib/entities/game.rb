@@ -52,6 +52,7 @@ class Game
           #{@kills}
         player kills:
           #{player_kills.join("\n    ")} 
+          
     SCORE
   end
 
